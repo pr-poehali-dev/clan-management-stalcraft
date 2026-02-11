@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Calendar } from '@/components/ui/calendar';
 
-type TabType = 'home' | 'members' | 'events' | 'rules';
+type TabType = 'home' | 'members' | 'squads' | 'events' | 'rules';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<TabType>('home');
@@ -37,6 +37,31 @@ const Index = () => {
     'Донат артефактов в клановое хранилище',
   ];
 
+  const squads = [
+    {
+      name: 'Альфа',
+      color: 'primary',
+      members: [
+        { nickname: 'Волк', armor: 'Тяжелая броня', weapon: 'АК-74' },
+        { nickname: 'Тень', armor: 'Средняя броня', weapon: 'SCAR-H' },
+        { nickname: 'Бородач', armor: 'Легкая броня', weapon: 'М4А1' },
+        { nickname: 'Призрак', armor: 'Снайперский костюм', weapon: 'SVD' },
+        { nickname: 'Медведь', armor: 'Тяжелая броня', weapon: 'РПК' },
+      ],
+    },
+    {
+      name: 'Браво',
+      color: 'secondary',
+      members: [
+        { nickname: 'Лиса', armor: 'Легкая броня', weapon: 'MP5' },
+        { nickname: 'Сокол', armor: 'Средняя броня', weapon: 'АК-74М' },
+        { nickname: 'Гром', armor: 'Тяжелая броня', weapon: 'ПКМ' },
+        { nickname: 'Ветер', armor: 'Легкая броня', weapon: 'УЗИ' },
+        { nickname: 'Скала', armor: 'Средняя броня', weapon: 'СВУ' },
+      ],
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground font-['Roboto'] flex">
       <aside className="fixed left-0 top-0 h-full w-16 hover:w-64 bg-card border-r border-primary/30 transition-all duration-300 z-50 group overflow-hidden">
@@ -50,6 +75,7 @@ const Index = () => {
           {[
             { id: 'home', icon: 'Home', label: 'Главная' },
             { id: 'members', icon: 'Users', label: 'Члены' },
+            { id: 'squads', icon: 'Shield', label: 'Отряды' },
             { id: 'events', icon: 'Calendar', label: 'События' },
             { id: 'rules', icon: 'ScrollText', label: 'Правила' },
           ].map((tab) => (
@@ -134,6 +160,43 @@ const Index = () => {
               </Card>
 
 
+            </div>
+          )}
+
+          {activeTab === 'squads' && (
+            <div className="space-y-6">
+              {squads.map((squad, idx) => (
+                <Card key={idx} className="p-6 bg-card border-primary/30">
+                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <Icon name="Shield" className={`text-${squad.color}`} />
+                    Отряд "{squad.name}"
+                  </h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                    {squad.members.map((member, memberIdx) => (
+                      <div
+                        key={memberIdx}
+                        className="flex flex-col items-center p-4 bg-muted rounded-lg border border-primary/20 hover:border-primary/40 transition-all"
+                      >
+                        <div className="w-24 h-24 bg-primary/10 rounded-lg border-2 border-primary/30 mb-3 flex items-center justify-center relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/20" />
+                          <Icon name="User" size={40} className="text-primary/60 relative z-10" />
+                        </div>
+                        <div className="w-full space-y-2 text-center">
+                          <p className="font-bold text-primary">{member.nickname}</p>
+                          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+                            <Icon name="ShieldCheck" size={12} />
+                            <span>{member.armor}</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+                            <Icon name="Crosshair" size={12} />
+                            <span>{member.weapon}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              ))}
             </div>
           )}
 
