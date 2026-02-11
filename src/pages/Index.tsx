@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Calendar } from '@/components/ui/calendar';
 
-type TabType = 'home' | 'members' | 'events' | 'rules' | 'chat';
+type TabType = 'home' | 'members' | 'events' | 'rules';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<TabType>('home');
@@ -38,8 +38,38 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-['Roboto']">
-      <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-background text-foreground font-['Roboto'] flex">
+      <aside className="fixed left-0 top-0 h-full w-16 hover:w-64 bg-card border-r border-primary/30 transition-all duration-300 z-50 group overflow-hidden">
+        <div className="p-4 border-b border-primary/30">
+          <div className="w-8 h-8 bg-primary/20 rounded flex items-center justify-center border border-primary group-hover:w-full transition-all">
+            <Icon name="Radiation" className="text-primary" size={20} />
+            <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-primary font-bold">ЗОНА-13</span>
+          </div>
+        </div>
+        <nav className="p-2 space-y-1 mt-4">
+          {[
+            { id: 'home', icon: 'Home', label: 'Главная' },
+            { id: 'members', icon: 'Users', label: 'Члены' },
+            { id: 'events', icon: 'Calendar', label: 'События' },
+            { id: 'rules', icon: 'ScrollText', label: 'Правила' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as TabType)}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-primary text-primary-foreground'
+                  : 'hover:bg-muted text-foreground'
+              }`}
+            >
+              <Icon name={tab.icon} size={20} className="flex-shrink-0" />
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{tab.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+      <div className="flex-1 ml-16">
+        <div className="container mx-auto px-4 py-6">
         <header className="mb-8 border-b border-primary/30 pb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -51,42 +81,14 @@ const Index = () => {
                 <p className="text-muted-foreground">Клановая система управления</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Badge variant="outline" className="border-primary text-primary">
-                <Icon name="Users" size={14} className="mr-1" />
-                Членов: {members.length}
-              </Badge>
-              <Badge variant="outline" className="border-secondary text-secondary">
-                <Icon name="Trophy" size={14} className="mr-1" />
-                Рейтинг: #7
-              </Badge>
-            </div>
+            <Badge variant="outline" className="border-primary text-primary">
+              <Icon name="Users" size={14} className="mr-1" />
+              Игроков: {members.length}
+            </Badge>
           </div>
         </header>
 
-        <nav className="mb-8 flex gap-2 overflow-x-auto pb-2">
-          {[
-            { id: 'home', icon: 'Home', label: 'Главная' },
-            { id: 'members', icon: 'Users', label: 'Члены' },
-            { id: 'events', icon: 'Calendar', label: 'События' },
-            { id: 'rules', icon: 'ScrollText', label: 'Правила' },
-            { id: 'chat', icon: 'MessageSquare', label: 'Чат' },
-          ].map((tab) => (
-            <Button
-              key={tab.id}
-              variant={activeTab === tab.id ? 'default' : 'ghost'}
-              onClick={() => setActiveTab(tab.id as TabType)}
-              className={`flex items-center gap-2 ${
-                activeTab === tab.id
-                  ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                  : 'hover:bg-muted'
-              }`}
-            >
-              <Icon name={tab.icon} size={18} />
-              {tab.label}
-            </Button>
-          ))}
-        </nav>
+
 
         <main className="animate-fade-in">
           {activeTab === 'home' && (
@@ -131,41 +133,7 @@ const Index = () => {
                 </div>
               </Card>
 
-              <div className="grid md:grid-cols-3 gap-4">
-                <Card className="p-4 bg-card border-primary/30 hover:border-primary/50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-primary/20 rounded-lg">
-                      <Icon name="Users" className="text-primary" size={24} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Активных членов</p>
-                      <p className="text-2xl font-bold text-primary">{members.filter(m => m.status === 'online').length}/{members.length}</p>
-                    </div>
-                  </div>
-                </Card>
-                <Card className="p-4 bg-card border-primary/30 hover:border-primary/50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-secondary/20 rounded-lg">
-                      <Icon name="Skull" className="text-secondary" size={24} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Всего убийств</p>
-                      <p className="text-2xl font-bold text-secondary">{members.reduce((acc, m) => acc + m.kills, 0)}</p>
-                    </div>
-                  </div>
-                </Card>
-                <Card className="p-4 bg-card border-primary/30 hover:border-primary/50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-primary/20 rounded-lg">
-                      <Icon name="Trophy" className="text-primary" size={24} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Место в рейтинге</p>
-                      <p className="text-2xl font-bold text-primary">#7</p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
+
             </div>
           )}
 
@@ -311,56 +279,9 @@ const Index = () => {
             </Card>
           )}
 
-          {activeTab === 'chat' && (
-            <Card className="p-6 bg-card border-primary/30 h-[600px] flex flex-col">
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Icon name="MessageSquare" className="text-primary" />
-                Клановый чат
-              </h2>
-              <div className="flex-1 bg-muted rounded-lg p-4 mb-4 overflow-y-auto">
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <Avatar className="w-8 h-8 border border-primary">
-                      <AvatarFallback className="bg-primary/20 text-primary text-xs">В</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm"><span className="font-semibold text-primary">Волк</span> <span className="text-xs text-muted-foreground">19:34</span></p>
-                      <p className="text-sm">Готовимся к штурму, всем быть онлайн в 20:00!</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Avatar className="w-8 h-8 border border-primary">
-                      <AvatarFallback className="bg-primary/20 text-primary text-xs">Т</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm"><span className="font-semibold text-primary">Тень</span> <span className="text-xs text-muted-foreground">19:36</span></p>
-                      <p className="text-sm">Буду, захватил новое оружие</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Avatar className="w-8 h-8 border border-primary">
-                      <AvatarFallback className="bg-primary/20 text-primary text-xs">М</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm"><span className="font-semibold text-primary">Медведь</span> <span className="text-xs text-muted-foreground">19:41</span></p>
-                      <p className="text-sm">Кто идёт на рейд в выходные?</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Написать сообщение..."
-                  className="flex-1 bg-muted border border-primary/30 rounded-lg px-4 py-2 focus:outline-none focus:border-primary"
-                />
-                <Button className="bg-primary hover:bg-primary/90">
-                  <Icon name="Send" size={18} />
-                </Button>
-              </div>
-            </Card>
-          )}
+
         </main>
+        </div>
       </div>
     </div>
   );
